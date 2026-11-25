@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Air Guitar Studio | استوديو الجيتار الهوائي</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <header class="stage-header">
+    <div class="brand">
+      <span class="brand-icon">🎸</span>
+      <div>
+        <h1>Air Guitar Studio</h1>
+        <small>اعمل 👌 بإيديك الاتنين، شد أكثر من وتر في الهوا، ومرّر إيدك عليهم للعزف الاحترافي</small>
+      </div>
+    </div>
+
+    <div class="status-pills">
+      <div class="pill">
+        <span class="dot" id="connDot"></span>
+        <span id="connText">جاري الاتصال...</span>
+      </div>
+      <div class="pill">
+        <span>⚡</span>
+        <strong id="fpsVal">0</strong>
+        <span>FPS</span>
+      </div>
+      <div class="pill">
+        <span>🧵</span>
+        <strong id="stringsCountBadge">0 أوتار</strong>
+      </div>
+      <div class="pill">
+        <span>🎼</span>
+        <span id="registerBadge">بانتظار الوتر</span>
+      </div>
+      <div class="pill chord-pill" id="chordBadgeWrap">
+        <span>الكورد:</span>
+        <strong id="chordBadge">Bm</strong>
+      </div>
+      <div class="pill band-pill" id="bandBadgeWrap">
+        <span>🥁</span>
+        <span id="bandBadge">الفرقة: عند العزف</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="stage-main">
+    <div class="video-stage">
+      <img id="videoFeed" src="/video_feed" alt="Live Air Guitar Camera">
+      <canvas id="stageCanvas"></canvas>
+      <div class="state-banner" id="stateBanner" data-state="IDLE">
+        اعمل إشارة تمام 👌 بإيديك الاتنين واسحب طول الوتر
+      </div>
+      <div class="song-progress-wrap" id="songProgressWrap">
+        <div class="song-progress-fill" id="songProgressFill"></div>
+      </div>
+
+      <div class="audio-overlay" id="audioOverlay">
+        <button class="btn-unlock" id="btnUnlockAudio">🔊 تفعيل الصوت وبدء العزف</button>
+        <p style="color: #9aa7bd; font-size: 0.9rem;">اضغط لتشغيل محرك الجيتار الاحترافي والفرقة المصاحبة</p>
+      </div>
+    </div>
+  </main>
+
+  <footer class="control-dock">
+    <div class="dock-group">
+      <button class="dock-btn active" data-preset="studio_acoustic">🎸 أكوستيك ستوديو</button>
+      <button class="dock-btn" data-preset="grand_piano">🎹 بيانو جراند</button>
+      <button class="dock-btn" data-preset="synth_lead">✨ كريستال سينث</button>
+      <button class="dock-btn" data-preset="flamenco">💃 فلامنكو</button>
+      <button class="dock-btn" data-preset="rock">⚡ إلكتريك روك</button>
+      <button class="dock-btn" data-preset="celestial_harp">🎻 هارب سماوي</button>
+    </div>
+
+    <div class="dock-group">
+      <button class="dock-btn active" data-playmode="song">🎶 أغنية كاملة</button>
+      <button class="dock-btn" data-playmode="smart">✨ جمل احترافية</button>
+      <button class="dock-btn" data-playmode="pluck">🎵 وتر بوتر</button>
+      <button class="dock-btn" data-playmode="live">🎸 كورد كامل</button>
+    </div>
+
+    <div class="dock-group" id="songSelectorGroup">
+      <button class="dock-btn active" data-song="despacito">🌴 ديسباسيتو</button>
+      <button class="dock-btn" data-song="piano_river">🎹 سيمفونية بيانو</button>
+      <button class="dock-btn" data-song="romance">🌹 رومانس الإسبانية</button>
+      <button class="dock-btn" data-song="rock_ballad">🎸 روك بالاد</button>
+      <button class="dock-btn" data-song="epic_pirates">🏴‍☠️ ملحمة القراصنة</button>
+      <button class="dock-btn" data-song="lofi_dream">🌙 لو-فاي حالمة</button>
+      <button class="dock-btn danger" id="btnStopSong" title="إيقاف الأغنية">⏹️ إيقاف</button>
+    </div>
+
+    <div class="dock-group">
+      <button class="dock-btn active" data-stringmode="multi">🧵 أوتار متعددة</button>
+      <button class="dock-btn" data-stringmode="single">1️⃣ وتر واحد</button>
+    </div>
+
+    <div class="dock-group">
+      <button class="dock-btn active" data-bandmode="auto">🥁 موسيقى مع العزف</button>
+      <button class="dock-btn" data-bandmode="always">🎶 موسيقى مستمرة</button>
+      <button class="dock-btn" data-bandmode="off">🔇 جيتار فقط</button>
+    </div>
+
+    <div class="dock-group">
+      <label class="slider-wrap">
+        <span>الحساسية:</span>
+        <input type="range" id="sensitivitySlider" min="0.5" max="1.5" step="0.1" value="1.1">
+        <strong id="sensitivityVal">1.1x</strong>
+      </label>
+      <button class="dock-btn" id="btnUndo" title="مسح آخر وتر (Z)">↩️ تراجع</button>
+      <button class="dock-btn danger" id="btnReset" title="مسح كل الأوتار (R)">🗑️ مسح الكل</button>
+    </div>
+  </footer>
+
+  <script type="module" src="/static/js/app.js"></script>
+</body>
+</html>
